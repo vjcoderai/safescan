@@ -12,7 +12,7 @@ import { Spinner } from '../components/UI';
 
 export default function ScanScreen() {
   const nav = useNavigation();
-  const cameraRef = useRef(null);
+  const cameraRef = useRef();
   const [permission, requestPermission] = useCameraPermissions();
   const [pages, setPages] = useState([]);
   const [flash, setFlash] = useState('off');
@@ -24,7 +24,7 @@ export default function ScanScreen() {
     setBusy(true);
     try {
       // expo-camera v56 ref method is takePicture (not takePictureAsync)
-      const photo = await cameraRef.current.takePicture({ quality: 0.9, skipProcessing: false });
+      const photo = await cameraRef.current.takePictureAsync({   quality: 0.9,   skipProcessing: false, });
       const processed = await ImageManipulator.manipulateAsync(
         photo.uri,
         [{ resize: { width: 1400 } }],
@@ -102,7 +102,7 @@ export default function ScanScreen() {
   // ── Camera view ─────────────────────────────────────────────────────────────
   return (
     <View style={styles.root}>
-      <CameraView ref={cameraRef} style={styles.camera} facing="back" flash={flash} autofocus="on">
+      <CameraView ref={cameraRef} style={styles.camera} facing="back" flash={flash} autofocus="auto">
         {/* Top bar */}
         <View style={styles.topBar}>
           <TouchableOpacity style={styles.iconBtn} onPress={() => nav.goBack()}>
