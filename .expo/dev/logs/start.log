@@ -1,3 +1,12 @@
-{"_e":"root:init","_t":1779900207727,"format":"v0-jsonl","version":"56.1.12"}
-{"_e":"env:mode","_t":1779900207728,"nodeEnv":"development","babelEnv":"development","mode":"development"}
-{"_e":"env:load","_t":1779900207731,"mode":"development","files":["../../../.env"],"env":{"EXPO_PUBLIC_SUPABASE_ANON_KEY":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJib2x0IiwicmVmIjoiMGVjOTBiNTdkNmU5NWZjYmRhMTk4MzJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4ODE1NzQsImV4cCI6MTc1ODg4MTU3NH0.9I8-U0x86Ak8t2DGaIk0HfvTSLsAyzdnz-Nw00mMkKw","EXPO_PUBLIC_SUPABASE_URL":"https://0ec90b57d6e95fcbda19832f.supabase.co"}}
+{"_e":"root:init","_t":1779900819853,"format":"v0-jsonl","version":"56.1.12"}
+{"_e":"env:mode","_t":1779900819854,"nodeEnv":"production","babelEnv":"production","mode":"production"}
+{"_e":"env:load","_t":1779900819855,"mode":"production","files":[],"env":{}}
+{"_e":"devserver:start","_t":1779900820077,"mode":"production","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../../../app","serverComponents":false,"serverActions":false,"serverRendering":false,"apiRoutes":false,"exporting":false}
+{"_e":"metro:config","_t":1779900820383,"serverRoot":"../../..","projectRoot":"../../..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":false,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
+{"_e":"metro:instantiate","_t":1779900823965,"atlas":false,"workers":6,"host":"::","port":8081}
+{"_e":"root:init","_t":1779900847573,"format":"v0-jsonl","version":"56.1.12"}
+{"_e":"env:mode","_t":1779900847574,"nodeEnv":"development","babelEnv":"development","mode":"development"}
+{"_e":"env:load","_t":1779900847577,"mode":"development","files":["../../../.env"],"env":{"EXPO_PUBLIC_SUPABASE_ANON_KEY":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJib2x0IiwicmVmIjoiMGVjOTBiNTdkNmU5NWZjYmRhMTk4MzJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4ODE1NzQsImV4cCI6MTc1ODg4MTU3NH0.9I8-U0x86Ak8t2DGaIk0HfvTSLsAyzdnz-Nw00mMkKw","EXPO_PUBLIC_SUPABASE_URL":"https://0ec90b57d6e95fcbda19832f.supabase.co"}}
+{"_e":"devserver:start","_t":1779900847810,"mode":"development","web":true,"baseUrl":"","asyncRoutes":false,"routerRoot":"../../../app","serverComponents":false,"serverActions":false,"serverRendering":false,"apiRoutes":false,"exporting":false}
+{"_e":"metro:config","_t":1779900848132,"serverRoot":"../../..","projectRoot":"../../..","exporting":false,"flags":{"autolinkingModuleResolution":false,"serverActions":false,"serverComponents":false,"reactCompiler":false,"optimizeGraph":false,"treeshaking":false,"logbox":false}}
+{"_e":"metro:instantiate","_t":1779900851892,"atlas":false,"workers":6,"host":"127.0.0.1","port":8081}

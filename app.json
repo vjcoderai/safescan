@@ -1,17 +1,12 @@
 {
   "expo": {
-"owner": "vj_coder",
-    "extra": {
-  "eas": {
-    "projectId": "09060b6b-2298-4b10-b1cf-085b7ec89441"
-  }
-},
     "name": "SafeScan",
-    "slug": "safesacan",
+    "slug": "safescan",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -40,10 +35,13 @@
         "android.permission.READ_MEDIA_IMAGES"
       ]
     },
-    "web": { "favicon": "./assets/favicon.png" },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
     "plugins": [
       ["expo-camera", { "cameraPermission": "SafeScan uses the camera to scan documents." }],
-      ["expo-image-picker", { "photosPermission": "SafeScan reads photos to convert them to PDF." }]
+      ["expo-image-picker", { "photosPermission": "SafeScan reads photos to convert to PDF." }]
     ]
   }
 }
