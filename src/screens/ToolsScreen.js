@@ -6,7 +6,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { Camera, ImageIcon, FileUp, Minimize2, ChevronRight } from 'lucide-react-native';
 import { C, R, S } from '../constants/theme';
 import { Spinner } from '../components/UI';
