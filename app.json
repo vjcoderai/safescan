@@ -3,6 +3,11 @@
     "name": "SafeScan",
     "slug": "safescan",
     "version": "1.0.0",
+     "slug": "safesacan",
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "09060b6b-2298-4b10-b1cf-085b7ec89441"
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
