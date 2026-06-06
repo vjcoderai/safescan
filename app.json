@@ -1,13 +1,14 @@
 {
   "expo": {
+    "owner": "vj_coder",
     "name": "SafeScan",
-    "slug": "safescan",
-    "version": "1.0.0",
-     "slug": "safesacan",
+    "slug": "safesacan",
     "version": "1.0.0",
     "extra": {
       "eas": {
         "projectId": "09060b6b-2298-4b10-b1cf-085b7ec89441"
+      }
+    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -45,8 +46,18 @@
       "bundler": "metro"
     },
     "plugins": [
-      ["expo-camera", { "cameraPermission": "SafeScan uses the camera to scan documents." }],
-      ["expo-image-picker", { "photosPermission": "SafeScan reads photos to convert to PDF." }]
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "SafeScan uses the camera to scan documents."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SafeScan reads photos to convert to PDF."
+        }
+      ]
     ]
   }
 }
