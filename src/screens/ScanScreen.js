@@ -23,8 +23,18 @@ export default function ScanScreen() {
     if (!cameraRef.current || busy) return;
     setBusy(true);
     try {
-      // expo-camera v56 ref method is takePicture (not takePictureAsync)
-      const photo = await cameraRef.current.takePictureAsync({   quality: 0.9,   skipProcessing: false, });
+      // expo-camera v56: Use takePicture() which returns a promise
+      const photo = await cameraRef.current.takePicture({
+        quality: 0.9,
+        skipProcessing: false,
+      });
+      
+      if (!photo || !photo.uri) {
+        Alert.alert('Capture failed', 'Could not capture image');
+        setBusy(false);
+        return;
+      }
+
       const processed = await ImageManipulator.manipulateAsync(
         photo.uri,
         [{ resize: { width: 1400 } }],
@@ -32,7 +42,8 @@ export default function ScanScreen() {
       );
       setPages(p => [...p, { uri: processed.uri, id: String(Date.now()) }]);
     } catch (e) {
-      Alert.alert('Capture failed', e.message);
+      console.error('Capture error:', e);
+      Alert.alert('Capture failed', e.message || 'Unknown error');
     } finally {
       setBusy(false);
     }
@@ -43,7 +54,7 @@ export default function ScanScreen() {
     nav.navigate('Edit', { pages: pages.map(p => p.uri) });
   };
 
-  // ── Permission gates ────────────────────────────────────────────────────────
+  // ── Permission gates ───────────────────────────────────────────────────────
   if (!permission) {
     return <View style={styles.center}><Text style={styles.t2}>Checking permission…</Text></View>;
   }
@@ -99,10 +110,10 @@ export default function ScanScreen() {
     );
   }
 
-  // ── Camera view ─────────────────────────────────────────────────────────────
+  // ── Camera view ─────────────────────────────────────────────────────────
   return (
     <View style={styles.root}>
-      <CameraView ref={cameraRef} style={styles.camera} facing="back" flash={flash} autofocus="auto">
+      <CameraView ref={cameraRef} style={styles.camera} facing="back" flash={flash} autofocus="on">
         {/* Top bar */}
         <View style={styles.topBar}>
           <TouchableOpacity style={styles.iconBtn} onPress={() => nav.goBack()}>
