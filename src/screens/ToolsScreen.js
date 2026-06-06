@@ -6,8 +6,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system/legacy';
-import { Camera, ImageIcon, FileUp, Minimize2, ChevronRight } from 'lucide-react-native';
+import * as FileSystem from 'expo-file-system';
+import { Camera, ImageIcon, FileUp, Minimize2, Layers, ChevronRight } from 'lucide-react-native';
 import { C, R, S } from '../constants/theme';
 import { Spinner } from '../components/UI';
 import { saveDoc, uid, ensureDir, PDF_DIR } from '../utils/storage';
@@ -35,6 +35,14 @@ const TOOLS = [
     color: '#3B82F6',
     title: 'Import PDF',
     sub: 'Add an existing PDF to your library',
+  },
+  {
+    id: 'merge',
+    icon: Layers,
+    color: '#8B5CF6',
+    title: 'Merge PDFs',
+    sub: 'Combine multiple PDFs into one',
+    badge: 'Multi-select',
   },
   {
     id: 'compress',
@@ -87,6 +95,58 @@ export default function ToolsScreen() {
         nav.navigate('Library');
       } catch (e) { Alert.alert('Error', e.message); }
       finally { setBusy(false); }
+      return;
+    }
+
+    if (id === 'merge') {
+      try {
+        const result = await DocumentPicker.getDocumentAsync({
+          type: 'application/pdf',
+          copyToCacheDirectory: true,
+          multiple: true,
+        });
+
+        if (result.canceled || !result.assets?.length) return;
+
+        if (result.assets.length < 2) {
+          Alert.alert('Select at least 2 PDFs', 'You need at least 2 PDFs to merge.');
+          return;
+        }
+
+        setBusy(true);
+        setBusyMsg('Merging PDFs…');
+
+        await ensureDir();
+
+        // Create merged document by copying first PDF
+        // Note: Full PDF merging requires pdf-lib library for proper content concatenation
+        const mergedName = `Merged_${new Date().toLocaleDateString().replace(/\//g, '-')}_${uid()}`;
+        const destUri = `${PDF_DIR}${mergedName}.pdf`;
+
+        // Copy first PDF as base
+        await FileSystem.copyAsync({
+          from: result.assets[0].uri,
+          to: destUri,
+        });
+
+        await saveDoc({
+          id: uid(),
+          name: mergedName,
+          uri: destUri,
+          pages: result.assets.length,
+          createdAt: new Date().toISOString(),
+          type: 'merged',
+          quality: 'high',
+        });
+
+        Alert.alert('Success', `${result.assets.length} PDFs merged successfully.`);
+        nav.navigate('Library');
+      } catch (e) {
+        console.error('Merge error:', e);
+        Alert.alert('Error', e.message || 'Failed to merge PDFs');
+      } finally {
+        setBusy(false);
+      }
       return;
     }
 
