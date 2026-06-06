@@ -19,20 +19,16 @@ export default function ScanScreen() {
   const [busy, setBusy] = useState(false);
   const [showPages, setShowPages] = useState(false);
 
-  const shoot = useCallback(async () => {
+const shoot = useCallback(async () => {
   if (!cameraRef.current || busy) return;
   setBusy(true);
   try {
     const photo = await cameraRef.current.takePictureAsync({
       quality: 0.85,
-      skipProcessing: true,        // Faster on mobile
+      skipProcessing: true,
     });
-    
-    if (!photo || !photo.uri) {
-      Alert.alert('Capture failed', 'Could not capture image');
-      setBusy(false);
-      return;
-    }
+
+    if (!photo?.uri) throw new Error('No photo captured');
 
     const processed = await ImageManipulator.manipulateAsync(
       photo.uri,
