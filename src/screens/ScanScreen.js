@@ -20,14 +20,34 @@ export default function ScanScreen() {
   const [showPages, setShowPages] = useState(false);
 
   const shoot = useCallback(async () => {
-    if (!cameraRef.current || busy) return;
-    setBusy(true);
-    try {
-      // expo-camera v56: Use takePicture() which returns a promise
-      const photo = await cameraRef.current.takePicture({
-        quality: 0.9,
-        skipProcessing: false,
-      });
+  if (!cameraRef.current || busy) return;
+  setBusy(true);
+  try {
+    const photo = await cameraRef.current.takePictureAsync({
+      quality: 0.85,
+      skipProcessing: true,        // Faster on mobile
+    });
+    
+    if (!photo || !photo.uri) {
+      Alert.alert('Capture failed', 'Could not capture image');
+      setBusy(false);
+      return;
+    }
+
+    const processed = await ImageManipulator.manipulateAsync(
+      photo.uri,
+      [{ resize: { width: 1400 } }],
+      { compress: 0.85, format: ImageManipulator.SaveFormat.JPEG }
+    );
+
+    setPages(p => [...p, { uri: processed.uri, id: String(Date.now()) }]);
+  } catch (e) {
+    console.error('Capture error:', e);
+    Alert.alert('Capture failed', e.message || 'Unknown error');
+  } finally {
+    setBusy(false);
+  }
+}, [busy]);
       
       if (!photo || !photo.uri) {
         Alert.alert('Capture failed', 'Could not capture image');
