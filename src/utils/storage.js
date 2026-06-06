@@ -1,13 +1,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from 'expo-file-system';
 
 const DOCS_KEY = 'safescan_v1_docs';
-export const PDF_DIR = FileSystem.documentDirectory + 'safescan_pdfs/';
+export const PDF_DIR = FileSystem.documentDirectory ? FileSystem.documentDirectory + 'safescan_pdfs/' : null;
 
 export async function ensureDir() {
-  const info = await FileSystem.getInfoAsync(PDF_DIR);
-  if (!info.exists) {
-    await FileSystem.makeDirectoryAsync(PDF_DIR, { intermediates: true });
+  if (!PDF_DIR) {
+    throw new Error('Document directory not available on this device');
+  }
+  
+  try {
+    const info = await FileSystem.getInfoAsync(PDF_DIR);
+    if (!info.exists) {
+      await FileSystem.makeDirectoryAsync(PDF_DIR, { intermediates: true });
+    }
+  } catch (e) {
+    console.error('ensureDir error:', e);
+    throw new Error(`Failed to create PDF directory: ${e.message}`);
   }
 }
 
@@ -19,47 +28,70 @@ export async function getDocs() {
   try {
     const raw = await AsyncStorage.getItem(DOCS_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch {
+  } catch (e) {
+    console.error('getDocs error:', e);
     return [];
   }
 }
 
 export async function saveDoc(doc) {
-  const docs = await getDocs();
-  const idx = docs.findIndex(d => d.id === doc.id);
-  if (idx >= 0) docs[idx] = doc;
-  else docs.unshift(doc);
-  await AsyncStorage.setItem(DOCS_KEY, JSON.stringify(docs));
-  return doc;
+  try {
+    const docs = await getDocs();
+    const idx = docs.findIndex(d => d.id === doc.id);
+    if (idx >= 0) docs[idx] = doc;
+    else docs.unshift(doc);
+    await AsyncStorage.setItem(DOCS_KEY, JSON.stringify(docs));
+    return doc;
+  } catch (e) {
+    console.error('saveDoc error:', e);
+    throw new Error(`Failed to save document: ${e.message}`);
+  }
 }
 
 export async function deleteDoc(id) {
-  const docs = await getDocs();
-  const doc = docs.find(d => d.id === id);
-  if (doc?.uri) {
-    const info = await FileSystem.getInfoAsync(doc.uri);
-    if (info.exists) await FileSystem.deleteAsync(doc.uri, { idempotent: true });
+  try {
+    const docs = await getDocs();
+    const doc = docs.find(d => d.id === id);
+    if (doc?.uri) {
+      const info = await FileSystem.getInfoAsync(doc.uri);
+      if (info.exists) await FileSystem.deleteAsync(doc.uri, { idempotent: true });
+    }
+    await AsyncStorage.setItem(DOCS_KEY, JSON.stringify(docs.filter(d => d.id !== id)));
+  } catch (e) {
+    console.error('deleteDoc error:', e);
+    throw new Error(`Failed to delete document: ${e.message}`);
   }
-  await AsyncStorage.setItem(DOCS_KEY, JSON.stringify(docs.filter(d => d.id !== id)));
 }
 
 export async function renameDoc(id, name) {
-  const docs = await getDocs();
-  await AsyncStorage.setItem(
-    DOCS_KEY,
-    JSON.stringify(docs.map(d => (d.id === id ? { ...d, name } : d)))
-  );
+  try {
+    const docs = await getDocs();
+    await AsyncStorage.setItem(
+      DOCS_KEY,
+      JSON.stringify(docs.map(d => (d.id === id ? { ...d, name } : d)))
+    );
+  } catch (e) {
+    console.error('renameDoc error:', e);
+    throw new Error(`Failed to rename document: ${e.message}`);
+  }
 }
 
 export async function clearAllDocs() {
-  const docs = await getDocs();
-  for (const d of docs) {
-    try {
-      const info = await FileSystem.getInfoAsync(d.uri);
-      if (info.exists) await FileSystem.deleteAsync(d.uri, { idempotent: true });
-    } catch {}
+  try {
+    const docs = await getDocs();
+    for (const d of docs) {
+      try {
+        const info = await FileSystem.getInfoAsync(d.uri);
+        if (info.exists) await FileSystem.deleteAsync(d.uri, { idempotent: true });
+      } catch (e) {
+        console.error(`Error deleting ${d.uri}:`, e);
+      }
+    }
+    await AsyncStorage.removeItem(DOCS_KEY);
+  } catch (e) {
+    console.error('clearAllDocs error:', e);
+    throw new Error(`Failed to clear all documents: ${e.message}`);
   }
-  await AsyncStorage.removeItem(DOCS_KEY);
 }
 
 export async function fileSize(uri) {
@@ -70,7 +102,8 @@ export async function fileSize(uri) {
     if (b < 1024) return `${b} B`;
     if (b < 1048576) return `${(b / 1024).toFixed(1)} KB`;
     return `${(b / 1048576).toFixed(1)} MB`;
-  } catch {
+  } catch (e) {
+    console.error('fileSize error:', e);
     return '—';
   }
 }
